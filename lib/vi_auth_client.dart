@@ -11,7 +11,7 @@ class ViAuthClient
   /**
    * _baseUrl: The URL of vi_auth_api/index.php, on your server
    */
-  ViAuthClient(this._baseUrl);
+  ViAuthClient(this._baseUrl, this._clientName);
 
   /**
    * Login using a one-time token, suitable for via url or a token stored in browser sessionStorage.
@@ -75,11 +75,13 @@ class ViAuthClient
 
   Future<String> _httpPOST(String command, Map<String, String> params) async
   {
-    http.Response response = await _client.post(_baseUrl + "$command", body: JSON.encode(params));
+    params["client"] = _clientName;
+    http.Response response = await _browserClient.post(_baseUrl + "$command", body: JSON.encode(params));
     if (response.statusCode != 200) throw new Exception("${response.body} (http status: ${response.statusCode})");
     return response.body;
   }
 
-  final BrowserClient _client = new BrowserClient();
+  final BrowserClient _browserClient = new BrowserClient();
   final String _baseUrl;
+  final String _clientName;
 }
