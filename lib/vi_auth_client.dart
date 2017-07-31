@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http show Response;
 class ViAuthClient
 {
   /**
-   * _baseUrl: The URL of vi_auth_api/index.php, on your server
+   * _baseUrl: The URL of vi_auth_api folder, on your server, including trailing slash
    */
   ViAuthClient(this._baseUrl, this._clientName);
 
