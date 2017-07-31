@@ -76,11 +76,17 @@ class ViAuthClient
   Future<String> _httpPOST(String command, Map<String, String> params) async
   {
     params["client"] = _clientName;
+    _loading = true;
     http.Response response = await _browserClient.post(_baseUrl + "$command", body: JSON.encode(params));
+    _loading = false;
     if (response.statusCode != 200) throw new Exception("${response.body} (http status: ${response.statusCode})");
     return response.body;
+
   }
 
+  bool get loading => _loading;
+
+  bool _loading = false;
   final BrowserClient _browserClient = new BrowserClient();
   final String _baseUrl;
   final String _clientName;
