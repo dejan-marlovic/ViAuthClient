@@ -13,6 +13,11 @@ class ViAuthClient
    */
   ViAuthClient(this._baseUrl, this._clientName);
 
+  Future<String> fetchLastLogin(String username) async
+  {
+    return await _httpPOST("fetch_last_login", {"username":username});
+  }
+
   /**
    * Login using a one-time token, suitable for via url or a token stored in browser sessionStorage.
    * Returns a new token
