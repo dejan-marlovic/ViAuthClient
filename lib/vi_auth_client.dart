@@ -46,20 +46,23 @@ class ViAuthClient
   }
 
   /**
-   * Reset the users password to the one specified
+   * Update the users' password to the one specified
    * Returns a new token
    */
-  Future<String> resetPassword(String username, String password, String token) async
+  Future<String> updatePassword(String username, String password, String token) async
   {
-    return await _httpPOST("reset_password", {"username":username, "password":password, "token":token});
+    return await _httpPOST("update_password", {"username":username, "password":password, "token":token});
   }
 
   /**
-   * Returns a new token
+   * Send new credentials to specified user. %token% placeholders in
+   * [message] will be replaced with an valid token.
+   * %password% placeholders will be replaced with a new automatically generated
+   * password (optional)
    */
-  Future<String> resetToken(String username) async
+  Future<String> sendCredentials(String username, String message, {bool sendEmail = true, bool sendSMS = false}) async
   {
-    return await _httpPOST("reset_token", {"username":username});
+    return await _httpPOST("send_credentials", {"username":username, "message":message, "send_email":sendEmail.toString(), "send_sms":sendSMS.toString()});
   }
 
   /**
