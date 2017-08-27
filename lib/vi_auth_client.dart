@@ -55,14 +55,17 @@ class ViAuthClient
   }
 
   /**
-   * Send new credentials to specified user. %token% placeholders in
-   * [message] will be replaced with an valid token.
-   * %password% placeholders will be replaced with a new automatically generated
-   * password (optional)
+   * Send email/sms message to the specified user with new credentials,
+   * or a custom message if for example the users account has become inactive
+   * %token% placeholders are replaced server-side by a new valid token
+   * %password% placeholders are replaced server-side by a new auto-generated password
+   * %username% placeholders are replaced server-side by the users username
    */
-  Future<String> sendCredentials(String username, String message, {bool sendEmail = true, bool sendSMS = false}) async
+  Future<String> sendCredentials(String username, {String emailFrom = null, String emailMessage = null, String emailSubject = null, String smsMessage = null, String smsFrom = null}) async
   {
-    return await _httpPOST("send_credentials", {"username":username, "message":message, "send_email":sendEmail.toString(), "send_sms":sendSMS.toString()});
+    if (emailMessage == null && smsMessage == null) throw new ArgumentError.notNull("emailMessage + smsMesssage");
+
+    return await _httpPOST("send_credentials", {"username":username, "email_from":emailFrom, "email_subject":emailSubject, "email_message":emailMessage, "sms_from":smsFrom, "sms_message":smsMessage});
   }
 
   /**
@@ -87,7 +90,7 @@ class ViAuthClient
     _loading = true;
     http.Response response = await _browserClient.post(_baseUrl + "$command", body: JSON.encode(params));
     _loading = false;
-    if (response.statusCode != 200) throw new Exception("${response.body} (http status: ${response.statusCode})");
+    if (response.statusCode != 200) throw new Exception("${response.body}");
     return response.body;
 
   }
